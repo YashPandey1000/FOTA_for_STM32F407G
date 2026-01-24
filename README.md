@@ -21,8 +21,8 @@ The system requires a common ground between the ESP32 and STM32. Wiring is criti
 
 | ESP32 Pin | STM32 Pin | Function |
 | :--- | :--- | :--- |
-| **Pin 5** | **BOOT0** | Force System Memory Mode |
-| **Pin 4** | **NRST** | Hardware Reset |
+| **Pin 4** | **BOOT0** | Force System Memory Mode |
+| **Pin 5** | **NRST** | Hardware Reset |
 | **Pin 17 (TX)** | **PA10 (RX)** | USART1 Communication |
 | **Pin 16 (RX)** | **PA9 (TX)** | USART1 Communication |
 | **GND** | **GND** | Common Ground Reference |
