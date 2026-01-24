@@ -1,5 +1,4 @@
-# Name of the Project
-**Robust Dual-Slot FOTA Manager for STM32F407**
+# Robust Dual-Slot FOTA Manager for STM32F407
 
 ---
 
@@ -7,6 +6,17 @@
 This project implements an autonomous, cloud-connected Firmware Over-The-Air (FOTA) update system. It utilizes an **ESP32** as a host controller to bridge **AWS S3** cloud storage with an **STM32F407** target. The system is designed with a "safety-first" philosophy, employing a dual-bank memory strategy that allows firmware updates to be streamed into a secondary slot while maintaining a stable primary application, ensuring zero-risk deployments.
 
 ---
+
+# Hardware Used
+* **STM32F407 Discovery Board:** The target microcontroller (Cortex-M4) featuring the dual-slot application logic.
+* **ESP32 (NodeMCU/DevKit):** The host controller managing Wi-Fi connectivity and STM32 hardware pins.
+
+* **Physical Interconnects:** * **USART1 (PA9/PA10):** Primary programming interface.
+    * **GPIO Control:** Reset (NRST) and Boot Mode (BOOT0) lines.
+    * **Common Ground:** Essential reference for signal integrity.
+
+---
+
 
 #  Hardware Configuration
 The system requires a common ground between the ESP32 and STM32. Wiring is critical for the synchronization phase.
@@ -18,6 +28,14 @@ The system requires a common ground between the ESP32 and STM32. Wiring is criti
 | **TX0** | **PA10 (RX)** | USART1 Communication |
 | **RX0** | **PA9 (TX)** | USART1 Communication |
 | **GND** | **GND** | Common Ground Reference |
+
+
+#  Software Used
+* **STM32CubeIDE:** Used for developing the Custom Flash Bootloader and the main application code (C/HAL).
+* **Arduino IDE:** Used for developing the ESP32 Host logic (C++/Arduino).
+* **AWS S3:** Cloud infrastructure for binary storage and version metadata.
+* **ST Serial Bootloader Protocol:** The low-level communication standard for flash memory access.
+
 
 # Key Components & Process Highlights
 
@@ -44,21 +62,6 @@ The system requires a common ground between the ESP32 and STM32. Wiring is criti
 
 ---
 
-# Hardware Used
-* **STM32F407 Discovery Board:** The target microcontroller (Cortex-M4) featuring the dual-slot application logic.
-* **ESP32 (NodeMCU/DevKit):** The host controller managing Wi-Fi connectivity and STM32 hardware pins.
-
-* **Physical Interconnects:** * **USART1 (PA9/PA10):** Primary programming interface.
-    * **GPIO Control:** Reset (NRST) and Boot Mode (BOOT0) lines.
-    * **Common Ground:** Essential reference for signal integrity.
-
----
-
-#  Software Used
-* **STM32CubeIDE:** Used for developing the Custom Flash Bootloader and the main application code (C/HAL).
-* **Arduino IDE:** Used for developing the ESP32 Host logic (C++/Arduino).
-* **AWS S3:** Cloud infrastructure for binary storage and version metadata.
-* **ST Serial Bootloader Protocol:** The low-level communication standard for flash memory access.
 
 
 
