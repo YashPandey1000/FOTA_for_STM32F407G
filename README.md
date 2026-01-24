@@ -23,18 +23,8 @@ The system requires a common ground between the ESP32 and STM32. Wiring is criti
 | :--- | :--- | :--- |
 | **Pin 4** | **BOOT0** | Force System Memory Mode |
 | **Pin 5** | **NRST** | Hardware Reset |
-| **Pin 17 (TX)** | **PA10 (RX)** | USART1 Communication |
-| **Pin 16 (RX)** | **PA9 (TX)** | USART1 Communication |
+| **TX0** | **PA10 (RX)** | USART1 Communication |
+| **RX0** | **PA9 (TX)** | USART1 Communication |
 | **GND** | **GND** | Common Ground Reference |
 
-[Image of STM32F407 discovery board pinout highlighting USART1 PA9 and PA10]
 
----
-
-## 📂 Repository Structure
-```text
-├── esp32_host/           # Arduino code for ESP32 (Cloud & ROM Protocol)
-├── stm32_bootloader/     # STM32 Custom Flash Bootloader (Slot Jumper)
-├── stm32_app/            # Main Application / Connectivity Test
-├── hardware/             # Schematics and Pin Maps
-└── docs/                 # Workflow diagrams and logic documentation
