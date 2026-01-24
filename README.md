@@ -1,10 +1,3 @@
-# CDAC_DESD_Group_3_Project
-This project implements a robust Firmware Over-The-Air (FOTA) update system for an STM32F407 microcontroller, managed by an ESP32 host. The architecture utilizes a dual-bank update strategy to ensure system reliability and fail-safe recovery.
-
-# STM32-ESP32 Dual-Slot FOTA System
-
-An interdisciplinary Firmware Over-The-Air (FOTA) update system that leverages an **ESP32** as a cloud-bridge to update an **STM32F407** target. The system uses a dual-bank strategy for fail-safe firmware deployments.
-
 ## 📌 Project Overview
 This project manages the entire lifecycle of a firmware update: from detection on **AWS S3** to physical flashing via the **STM32 ROM Bootloader**, and finally jumping to the new application using a **Custom Flash Bootloader**.
 
