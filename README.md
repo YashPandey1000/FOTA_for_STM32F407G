@@ -1,11 +1,11 @@
 # Robust Dual-Slot FOTA Manager for STM32F407
 
----
+
 
 #  Project Overview
 This project implements an autonomous, cloud-connected Firmware Over-The-Air (FOTA) update system. It utilizes an **ESP32** as a host controller to bridge **AWS S3** cloud storage with an **STM32F407** target. The system is designed with a "safety-first" philosophy, employing a dual-bank memory strategy that allows firmware updates to be streamed into a secondary slot while maintaining a stable primary application, ensuring zero-risk deployments.
 
----
+
 
 # Hardware Used
 * **STM32F407 Discovery Board:** The target microcontroller (Cortex-M4) featuring the dual-slot application logic.
@@ -15,7 +15,6 @@ This project implements an autonomous, cloud-connected Firmware Over-The-Air (FO
     * **GPIO Control:** Reset (NRST) and Boot Mode (BOOT0) lines.
     * **Common Ground:** Essential reference for signal integrity.
 
----
 
 
 #  Hardware Configuration
@@ -52,7 +51,7 @@ The system requires a common ground between the ESP32 and STM32. Wiring is criti
 3.  **Streamed Programming:** Firmware is pulled from the cloud and piped directly to the STM32 via **USART1 (PA9/PA10)** in 256-byte chunks using Even Parity.
 4.  **Atomic Commitment:** Once the binary is fully written to Slot B, the ESP32 writes the metadata. The STM32 custom bootloader validates this metadata before allowing a jump to the new code.
 
----
+
 
 # Achievements
 * **Fail-Safe Redundancy:** Successfully implemented a dual-slot layout that prevents system bricking during interrupted updates.
@@ -60,7 +59,6 @@ The system requires a common ground between the ESP32 and STM32. Wiring is criti
 * **Inter-Protocol Mastery:** Integrated diverse communication standards, including HTTPS for cloud access and the ST Serial Bootloader protocol (8E1) for hardware flashing.
 * **Real-Time Observability:** Developed a custom CLI progress monitor and LED diagnostic system for real-time status tracking during the update cycle.
 
----
 
 
 
