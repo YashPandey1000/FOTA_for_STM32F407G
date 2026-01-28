@@ -12,9 +12,9 @@ Moving beyond traditional asynchronous methods, this system leverages SPI (Seria
 * **STM32F407 Discovery Board:** The target microcontroller (Cortex-M4) featuring the dual-slot application logic.
 * **ESP32 (NodeMCU/DevKit):** The host controller acting as the SPI Master, managing Wi-Fi connectivity and the update clock.
 
-* **Physical Interconnects:** * **SPI1 (PA4/PA5/PA6/PA7):** High-speed synchronous programming interface.
+* **Physical Interconnects:**  **SPI1 (PA4/PA5/PA6/PA7):** High-speed synchronous programming interface.
 * **GPIO Control:** Reset (NRST) and Boot Mode (BOOT0) lines.
-* **Common Ground:**Absolute reference required for signal integrity and noise immunity in high-frequency clocking.
+* Common Ground:Absolute reference required for signal integrity and noise immunity in high-frequency clocking.
 
 
 
