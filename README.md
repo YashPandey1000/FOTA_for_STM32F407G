@@ -51,7 +51,7 @@ The system requires a common ground between the ESP32 and STM32. Wiring is criti
 ### Process Highlights
 1.  **Version Interrogation:** The ESP32 performs an HTTP HEAD request to AWS to compare the cloud ETag with the local identifier, saving energy and data.
 2.  **Hardware Handshake:** Upon detecting a new version, the ESP32 drives the STM32 **BOOT0** High and pulses **NRST** to force entry into the ROM-based System Memory. Crucial Step: ESP32 waits a defined stabilization period (t_boot) before asserting NSS (Chip Select) to begin SPI transactions.
-3.  **Streamed Programming:** Firmware is pulled from the cloud and piped to the STM32 via SPI. The ESP32 sends a Write Memory command followed by data chunks.**
+3.  **Streamed Programming:** Firmware is pulled from the cloud and piped to the STM32 via SPI. The ESP32 sends a Write Memory command followed by data chunks.
 **Protocol: ST SPI Bootloader (Ack/Nack handling).Synchronization: ESP32 sends "Dummy Bytes" to clock out the Acknowledgement (ACK) byte from the STM32.**
 5.  **Atomic Commitment:** Once the binary is fully written to Slot B, the ESP32 writes the metadata. The STM32 custom bootloader validates this metadata before allowing a jump to the new code.
 
