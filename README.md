@@ -23,10 +23,10 @@ The system requires a common ground between the ESP32 and STM32. Wiring is criti
 
 | ESP32 Pin | STM32 Pin | Function |
 | :--- | :--- | :--- |
-| **Pin 4** | **BOOT0** | Force System Memory Mode |
-| **Pin 5** | **NRST** | Hardware Reset |
-| **TX0** | **PA10 (RX)** | USART1 Communication |
-| **RX0** | **PA9 (TX)** | USART1 Communication |
+| **GPIO 23 (MOSI)** | **PA7 (MOSI)** | Data: Host to Target |
+| **GPIO 19 (MISO)** | **PA6 (MISO)** | Data: Target to Host |
+| **GPIO 18 (SCK)** | **PA5 (SCK)** | Clock Source |
+| **GPIO 5 (CS/SS)** | **PA4 (NSS)** | Chip Select / Slave Select |
 | **GND** | **GND** | Common Ground Reference |
 
 
@@ -50,10 +50,11 @@ The system requires a common ground between the ESP32 and STM32. Wiring is criti
 
 ### Process Highlights
 1.  **Version Interrogation:** The ESP32 performs an HTTP HEAD request to AWS to compare the cloud ETag with the local identifier, saving energy and data.
-2.  **Hardware Handshake:** Upon detecting a new version, the ESP32 drives the STM32 **BOOT0** High and pulses **NRST** to force entry into the ROM-based System Memory.
-
-3.  **Streamed Programming:** Firmware is pulled from the cloud and piped directly to the STM32 via **USART1 (PA9/PA10)** in 256-byte chunks using Even Parity.
-4.  **Atomic Commitment:** Once the binary is fully written to Slot B, the ESP32 writes the metadata. The STM32 custom bootloader validates this metadata before allowing a jump to the new code.
+2.  **Hardware Handshake:** Upon detecting a new version, the ESP32 drives the STM32 **BOOT0** High and pulses **NRST** to force entry into the ROM-based System Memory. Crucial Step: ESP32 waits a defined stabilization period (t_boot) before asserting NSS (Chip Select) to begin SPI transactions.
+3.  **Streamed Programming:** Firmware is pulled from the cloud and piped to the STM32 via SPI. The ESP32 sends a Write Memory command followed by data chunks.**
+**Protocol: ST SPI Bootloader (Ack/Nack handling).**
+**Synchronization: ESP32 sends "Dummy Bytes" to clock out the Acknowledgement (ACK) byte from the STM32.**
+5.  **Atomic Commitment:** Once the binary is fully written to Slot B, the ESP32 writes the metadata. The STM32 custom bootloader validates this metadata before allowing a jump to the new code.
 
 
 
