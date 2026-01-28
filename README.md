@@ -14,7 +14,7 @@ Moving beyond traditional asynchronous methods, this system leverages SPI (Seria
 
 * **Physical Interconnects:** * **SPI1 (PA4/PA5/PA6/PA7):** High-speed synchronous programming interface.
     * **GPIO Control:** Reset (NRST) and Boot Mode (BOOT0) lines.
-    * **Common Ground:**Absolute reference required for signal integrity and noise immunity in high-frequency clocking.
+    * Common Ground:Absolute reference required for signal integrity and noise immunity in high-frequency clocking.
 
 
 
