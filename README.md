@@ -1,69 +1,192 @@
-# Robust Dual-Slot FOTA Manager for STM32F407
+# STM32 Firmware Over-The-Air (FOTA) Update System
+### Using Custom Bootloader, ESP32 and AWS S3
+
+---
+
+## 📌 Project Overview
+
+This project presents a **robust and fail-safe Firmware Over-The-Air (FOTA) update system** developed for the **STM32F407VG microcontroller**. The system enables remote firmware updates without requiring physical access to the device, while ensuring system stability and recovery in the event of update failure.
+
+A **custom bootloader** is implemented in a protected region of the internal Flash memory. The bootloader manages firmware reception, Flash programming, firmware validation, and controlled application switching using a **dual-application (Slot A / Slot B) architecture**. Firmware updates are delivered via an **ESP32 Wi-Fi module**, and firmware binaries are hosted on **AWS S3 cloud storage**.
+
+---
+
+## 🎯 Objectives
+
+- Enable remote firmware updates without physical access
+- Prevent device bricking during firmware update failures
+- Maintain at least one valid firmware image at all times
+- Implement a scalable and cloud-based OTA solution
+- Ensure reliability under power failure and communication loss
+
+---
+
+## 🧠 System Architecture
+
+AWS S3 (Firmware Storage)
+|
+v
+Python OTA Server (Flask)
+|
+v
+ESP32 (Wi-Fi Module)
+|
+SPI Communication
+|
+STM32 Bootloader
+| |
+Slot A Slot B
+(Active) (Update)
 
 
+---
 
-#  Project Overview
-This project implements an autonomous, cloud-connected Firmware Over-The-Air (FOTA) update system. It utilizes an **ESP32** as a host controller to bridge **AWS S3** cloud storage with an **STM32F407** target. The system is designed with a "safety-first" philosophy, employing a dual-bank memory strategy that allows firmware updates to be streamed into a secondary slot while maintaining a stable primary application, ensuring zero-risk deployments.
-Moving beyond traditional asynchronous methods, this system leverages SPI (Serial Peripheral Interface) to create a high-bandwidth data pipeline. The architecture retains a "safety-first" philosophy, employing a dual-bank memory strategy that streams firmware into a secondary slot while maintaining a stable primary application, ensuring zero-risk deployments with superior transmission speeds.
+## 🔑 Key Features
+
+### Custom Bootloader
+- Executes immediately after system reset
+- Stored in a protected Flash memory region
+- Handles firmware reception, validation, and slot switching
+
+### Dual Application (Ping-Pong) Architecture
+- Slot A: Active application firmware
+- Slot B: Update / backup firmware
+- Guarantees system recovery in case of update failure
+
+### Fail-Safe OTA Mechanism
+- Firmware written only to inactive slot
+- Execution switch occurs only after successful validation
+- Automatic rollback to previous firmware on failure
+
+### Cloud-Based Firmware Delivery
+- Firmware binaries hosted on AWS S3
+- Version control using `version.txt`
+- Scalable and globally accessible update system
+
+---
+
+## 🛠 Hardware Platform
+
+| Component | Description |
+|--------|-------------|
+| STM32F407VG | ARM Cortex-M4 @ 168 MHz |
+| ESP32 | Wi-Fi communication module |
+| SPI Interface | Firmware transfer |
+| ST-LINK | Programming and debugging |
+
+---
+
+## 🧑‍💻 Software Tools Used
+
+| Tool | Purpose |
+|-----|--------|
+| STM32CubeIDE | Bootloader and application development |
+| STM32CubeProgrammer | Flash programming and verification |
+| STM32 HAL Library | Peripheral and Flash abstraction |
+| Arduino IDE | ESP32 firmware development |
+| Python Flask | OTA firmware server |
+| AWS S3 | Cloud firmware storage |
+
+---
+
+## 📂 Repository Structure
+
+.
+├── bootloader.c # STM32 custom bootloader
+├── slot_a.c # Application firmware (Slot A)
+├── slot_b.c # Application firmware (Slot B)
+├── esp32.c # ESP32 OTA client code
+├── server.py # Python Flask OTA server
+├── slot_a.bin # Compiled firmware binary (Slot A)
+├── slot_b.bin # Compiled firmware binary (Slot B)
+├── version.txt # Firmware version file
+└── README.md
 
 
+---
 
-# Hardware Used
-* **STM32F407 Discovery Board:** The target microcontroller (Cortex-M4) featuring the dual-slot application logic.
-* **ESP32 (NodeMCU/DevKit):** The host controller acting as the SPI Master, managing Wi-Fi connectivity and the update clock.
+## 🔄 OTA Update Workflow
 
-* **Physical Interconnects:**  **SPI1 (PA4/PA5/PA6/PA7):** High-speed synchronous programming interface.
-* **GPIO Control:** Reset (NRST) and Boot Mode (BOOT0) lines.
-* Common Ground:Absolute reference required for signal integrity and noise immunity in high-frequency clocking.
+1. STM32 resets and executes the bootloader
+2. Bootloader checks active firmware slot
+3. ESP32 connects to Wi-Fi network
+4. OTA server checks firmware version on AWS S3
+5. New firmware version detected
+6. Firmware downloaded via ESP32
+7. Firmware transferred to STM32 via SPI
+8. Firmware written to inactive Flash slot
+9. Firmware integrity validated
+10. Bootloader switches execution to updated firmware
 
+---
 
+## 🧪 Testing and Validation
 
-#  Hardware Configuration
-The system requires a common ground between the ESP32 and STM32. Wiring is critical for the synchronization phase.The shift to SPI requires a 4-wire bus topology. Unlike UART, wiring length and impedance matching become more critical due to the clock signal (SCK).
+The FOTA system was tested extensively under various conditions:
 
-| ESP32 Pin | STM32 Pin | Function |
-| :--- | :--- | :--- |
-| **GPIO 23 (MOSI)** | **PA7 (MOSI)** | Data: Host to Target |
-| **GPIO 19 (MISO)** | **PA6 (MISO)** | Data: Target to Host |
-| **GPIO 18 (SCK)** | **PA5 (SCK)** | Clock Source |
-| **GPIO 5 (CS/SS)** | **PA4 (NSS)** | Chip Select / Slave Select |
-| **GND** | **GND** | Common Ground Reference |
+- Multiple OTA update cycles
+- Power failure during firmware update
+- Corrupted firmware transmission
+- SPI communication interruption
+- Flash memory read-back verification
 
+The system consistently prevented execution of invalid firmware and safely recovered from failures.
 
-#  Software Used
-* **STM32CubeIDE:** Used for developing the Custom Flash Bootloader and the main application code (C/HAL).
-* **Arduino IDE:** Used for developing the ESP32 Host logic (C++/Arduino).
-* **AWS S3:** Cloud infrastructure for binary storage and version metadata.
-* **ST Serial Bootloader Protocol:** The low-level communication standard for flash memory access.
-* **ST SPI Bootloader Protocol:** The specific command set (documented in ST AN4286) used for communicating with the STM32 system memory via SPI.
+---
 
+## 📊 Experimental Results
 
-# Key Components & Process Highlights
+- Reliable firmware transfer over SPI
+- Correct Flash erase and write operations
+- Successful application slot switching
+- Safe fallback to previous firmware
+- No device bricking observed
 
-### Key Components
-* **Cloud Gateway (AWS S3):** Acts as the remote repository for firmware binaries, utilizing **ETags** for efficient version tracking.
-* **Host Controller (ESP32):** Orchestrates the update lifecycle, including cloud polling, physical pin manipulation (BOOT0/NRST), and protocol execution.
-* **Custom Flash Bootloader (STM32):** A dedicated first-stage bootloader residing in Sector 0 that manages the logic-based jump between Slot A and Slot B.
-* **SPI Master (ESP32):** Orchestrates the update lifecycle. It controls the bus clock, manages the Chip Select (NSS) line to frame transactions, and handles physical pin manipulation.
-* **SPI Slave (STM32 Bootloader):** Listens on the SPI bus. It receives commands and data strictly on the clock edges provided by the ESP32.
-* **Metadata Sector:** A reserved Flash region (Sector 11) used to store the "Magic Number" and boot flags required for atomic commitment.
+---
 
-### Process Highlights
-1.  **Version Interrogation:**
-2.  **Hardware Handshake:**
-3.  **Streamed Programming:** 
-**Protocol: ST SPI Bootloader (Ack/Nack handling).Synchronization: ESP32 sends "Dummy Bytes" to clock out the Acknowledgement (ACK) byte from the STM32.**
-5.  **Atomic Commitment:**
+## 🔐 Failure Handling
 
+| Failure Scenario | System Response |
+|-----------------|----------------|
+| Power loss | Rollback to previous firmware |
+| Corrupted image | Firmware rejected |
+| SPI error | Update aborted safely |
+| Invalid version | Update ignored |
 
+---
 
-# Achievements
-* **Fail-Safe Redundancy:** Successfully implemented a dual-slot layout that prevents system bricking during interrupted updates.
-* **Autonomous Versioning:** 
-* **Inter-Protocol Mastery:** 
-* **Real-Time Observability:** 
+## 🔮 Future Enhancements
 
+- Secure boot and firmware authentication
+- Encrypted firmware updates
+- MQTT / HTTPS OTA support
+- Delta firmware updates
+- AWS IoT Core integration
 
+---
 
+## 👤 Author
 
+**Yash Pandey **  
+Embedded Systems & Firmware Developer  
+STM32 • ESP32 • Embedded C • FOTA • IoT
+
+---
+
+## 🙏 Acknowledgements
+
+- Awesome README Templates  
+  https://awesomeopensource.com/project/elangosundar/awesome-README-templates
+- Awesome README  
+  https://github.com/matiassingers/awesome-readme
+- How to Write a Good README  
+  https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project
+
+---
+
+## 📜 License
+
+This project is developed for **academic, educational, and research purposes**.
+
+---
 
